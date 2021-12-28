@@ -4,10 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.filmsearch.R
 import com.example.filmsearch.databinding.TopFilmsScreenBinding
+import com.example.filmsearch.di.NetworkModule
 import com.example.filmsearch.domain.entity.Film
 import com.example.filmsearch.presentation.common.BaseFragment
 import com.example.filmsearch.presentation.filmDetail.FilmDetailFragment
@@ -22,8 +26,13 @@ class TopFilmsFragment : BaseFragment(R.layout.top_films_screen) {
 //    }
 
     private val viewBinding by viewBinding(TopFilmsScreenBinding::bind)
-    private val viewModel by viewModels<TopFilmsViewModel>()
-
+    private val viewModel by viewModels<TopFilmsViewModel> {
+        object : ViewModelProvider.Factory {
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return TopFilmsViewModel(NetworkModule.getRepository()) as T
+            }
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -33,8 +42,11 @@ class TopFilmsFragment : BaseFragment(R.layout.top_films_screen) {
         viewModel.countState.observe(viewLifecycleOwner) { count ->
             viewBinding.topFilmCount.text = count.toString()
         }
+        viewModel.filmState.observe(viewLifecycleOwner) {
+            viewBinding.topFilmCount.text = it.joinToString()
+        }
         viewBinding.topFilmShowDetail.setOnClickListener{
-            openDetail(Film("Джентельмены", "2020"))
+            openDetail(Film("Джентельмены", 2020))
         }
     }
 
