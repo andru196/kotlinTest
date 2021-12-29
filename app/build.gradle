@@ -3,6 +3,8 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-parcelize'
     id 'org.jetbrains.kotlin.plugin.serialization' version "$kotlint_version"
+    id 'com.google.secrets_gradle_plugin' version '0.4'
+
 }
 
 android {

@@ -10,6 +10,6 @@ interface FilmApi {
     suspend fun getTopFilms(
         @Query("type") type: String,
         @Query("page") page: Int,
-        @Header("X-API-KEY") key: String = "-85bba9b9fc31"
+        @Header("X-API-KEY") key: String
     ) : TopFilmsResponse
 }

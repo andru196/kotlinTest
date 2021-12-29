@@ -22,9 +22,11 @@ object NetworkModule {
         .create()
 
     private var repository:FilmRepository? = null
+    var apiKey: String = ""
 
     fun getRepository(): FilmRepository {
-        return repository ?: FilmRepositoryImpl(filmApi).also { repository = it }
-
+        if (apiKey.isBlank())
+            throw ExceptionInInitializerError()
+        return repository ?: FilmRepositoryImpl(filmApi, apiKey).also { repository = it }
     }
 }

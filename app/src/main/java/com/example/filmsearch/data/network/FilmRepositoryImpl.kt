@@ -5,10 +5,11 @@ import com.example.filmsearch.domain.entity.Film
 import com.example.filmsearch.domain.entity.TopType
 
 class FilmRepositoryImpl(
-    private val filmApi: FilmApi
+    private val filmApi: FilmApi,
+    private val apiKey: String
 ) : FilmRepository {
     override suspend fun getTopFilms(topType: TopType, page: Int): List<Film> {
-        return filmApi.getTopFilms(topType.serverType, page).films?.mapNotNull { filmNw ->
+        return filmApi.getTopFilms(topType.serverType, page, apiKey).films?.mapNotNull { filmNw ->
             Film(name=filmNw.nameRu ?: return@mapNotNull null,
             year = filmNw.year?.toIntOrNull() ?: return@mapNotNull null)
         } ?: emptyList()
