@@ -14,25 +14,42 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     />
-<TextView
-    android:id="@+id/film_detail_name"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:textSize="24sp"
-    android:layout_marginHorizontal="10dp"
-    android:textColor="@color/black"
-    app:layout_constraintTop_toBottomOf="@id/fil_detail_back"
+    <ImageView
+    android:id="@+id/film_detail_poster"
+    android:layout_width="match_parent"
+    android:layout_height="400dp"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    tools:text="Властелин колец"
-    />
-<TextView
-        android:id="@+id/fil_detail_year"
+    app:layout_constraintTop_toBottomOf="@id/fil_detail_back"/>
+    <TextView
+        android:id="@+id/film_detail_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:layout_marginHorizontal="10dp"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/film_detail_poster"
+        tools:text="Властелин колец"
+        />
+    <TextView
+        android:id="@+id/film_detail_year"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/film_detail_name"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginHorizontal="10dp"
         tools:text="2004"
+        />
+    <TextView
+        android:id="@+id/film_detail_raiting"
+        android:textSize="12sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/film_detail_year"
+        android:layout_marginHorizontal="10dp"
+        tools:text="Рейтинг ожидания 94.5%"
+        app:layout_constraintStart_toStartOf="parent"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

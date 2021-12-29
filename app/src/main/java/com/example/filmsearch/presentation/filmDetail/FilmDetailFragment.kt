@@ -12,6 +12,7 @@ import com.example.filmsearch.databinding.FilmDetailScreenBinding
 import com.example.filmsearch.domain.entity.Film
 import com.example.filmsearch.presentation.common.BaseFragment
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.example.filmsearch.presentation.common.setImageUrl
 
 class FilmDetailFragment: BaseFragment(R.layout.film_detail_screen) {
     companion object {
@@ -35,8 +36,9 @@ class FilmDetailFragment: BaseFragment(R.layout.film_detail_screen) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.filmState.observe(viewLifecycleOwner) { film ->
-            viewBinding.filDetailYear.text = film.year.toString()
+            viewBinding.filmDetailYear.text = film.year.toString()
             viewBinding.filmDetailName.text = film.name
+            viewBinding.filmDetailPoster.setImageUrl(film.posterUrl ?: "")
         }
 
         viewModel.backAction.observe(viewLifecycleOwner) {
@@ -45,8 +47,6 @@ class FilmDetailFragment: BaseFragment(R.layout.film_detail_screen) {
         viewBinding.filDetailBack.setOnClickListener{
             viewModel.onbackPressed()
         }
-        val film = arguments?.getParcelable<Film>(FILM_DETAIL_DATA_KEY)
-        viewBinding.filDetailYear.text = film?.name
     }
 
     private fun closeScreen() {

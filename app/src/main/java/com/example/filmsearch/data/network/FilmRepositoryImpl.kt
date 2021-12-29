@@ -11,7 +11,10 @@ class FilmRepositoryImpl(
     override suspend fun getTopFilms(topType: TopType, page: Int): List<Film> {
         return filmApi.getTopFilms(topType.serverType, page, apiKey).films?.mapNotNull { filmNw ->
             Film(name=filmNw.nameRu ?: return@mapNotNull null,
-            year = filmNw.year?.toIntOrNull() ?: return@mapNotNull null)
+            year = filmNw.year?.toIntOrNull() ?: return@mapNotNull null,
+            posterUrl = filmNw.posterUrl ?: "",
+            posterUrlPreview =  filmNw.posterUrlPreview ?: "",
+            rating = filmNw.rating)
         } ?: emptyList()
     }
 
