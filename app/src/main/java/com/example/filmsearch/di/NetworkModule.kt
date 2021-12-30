@@ -4,13 +4,19 @@ import com.example.filmsearch.data.network.FilmApi
 import com.example.filmsearch.data.network.FilmRepositoryImpl
 import com.example.filmsearch.domain.FilmRepository
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.migration.DisableInstallInCheck
 import retrofit2.Retrofit
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.create
 
-object NetworkModule {
-    private val filmApi: FilmApi = Retrofit.Builder()
+@Module
+@DisableInstallInCheck
+class NetworkModule {
+    @Provides
+    fun provideFilmApi(): FilmApi = Retrofit.Builder()
         .baseUrl("https://kinopoiskapiunofficial.tech")
         .addConverterFactory(
             Json(builderAction = {
@@ -21,12 +27,12 @@ object NetworkModule {
         .build()
         .create()
 
-    private var repository:FilmRepository? = null
-    var apiKey: String = ""
-
-    fun getRepository(): FilmRepository {
-        if (apiKey.isBlank())
-            throw ExceptionInInitializerError()
-        return repository ?: FilmRepositoryImpl(filmApi, apiKey).also { repository = it }
+    companion object {
+        var apiKey: String = ""
     }
+
+    @Provides
+    fun getRepository(filmApi: FilmApi): FilmRepository =
+        FilmRepositoryImpl(filmApi, apiKey)
+
 }

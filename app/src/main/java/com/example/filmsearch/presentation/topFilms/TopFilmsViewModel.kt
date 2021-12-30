@@ -12,8 +12,9 @@ import com.example.filmsearch.presentation.common.SingleLiveEvent
 import com.example.filmsearch.presentation.common.launchWithErrorHandler
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class TopFilmsViewModel(
+class TopFilmsViewModel @Inject constructor(
     private val filmRepository: FilmRepository
 ): ViewModel() {
 

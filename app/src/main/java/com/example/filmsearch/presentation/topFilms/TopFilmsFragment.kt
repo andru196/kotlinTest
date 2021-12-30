@@ -10,12 +10,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.example.filmsearch.App
 import com.example.filmsearch.R
 import com.example.filmsearch.databinding.TopFilmsScreenBinding
 import com.example.filmsearch.di.NetworkModule
 import com.example.filmsearch.domain.entity.Film
 import com.example.filmsearch.presentation.common.BaseFragment
 import com.example.filmsearch.presentation.filmDetail.FilmDetailFragment
+import javax.inject.Inject
+import javax.inject.Provider
 
 class TopFilmsFragment : BaseFragment(R.layout.top_films_screen) {
 //    override fun onCreateView(
@@ -25,16 +28,21 @@ class TopFilmsFragment : BaseFragment(R.layout.top_films_screen) {
 //    ): View? {
 //        return inflater.inflate(R.layout.top_films_screen)
 //    }
-
+    @Inject
+    lateinit var topFilmsViewModel: Provider<TopFilmsViewModel>
     private val viewBinding by viewBinding(TopFilmsScreenBinding::bind)
     private val viewModel by viewModels<TopFilmsViewModel> {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return TopFilmsViewModel(NetworkModule.getRepository()) as T
+                return topFilmsViewModel.get() as T
             }
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        App.component.inject(this)
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val topFilmsAdapter = TopFilmsAdapter(viewModel::onFilmClicked)
