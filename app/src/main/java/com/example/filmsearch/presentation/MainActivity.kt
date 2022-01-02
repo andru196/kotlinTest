@@ -6,7 +6,9 @@ import com.example.filmsearch.R
 import com.example.filmsearch.di.NetworkModule
 import com.example.filmsearch.presentation.common.BaseActivity
 import com.example.filmsearch.presentation.topFilms.TopFilmsFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,10 +20,7 @@ class MainActivity : BaseActivity() {
                 .replace(R.id.main_activity_container, fragment)
                 .addToBackStack(null)
                 .commitAllowingStateLoss()
-            val ai = applicationContext.packageManager
-                .getApplicationInfo(applicationContext.packageName, PackageManager.GET_META_DATA)
-            val value = ai.metaData["keyValue"]
-            NetworkModule.apiKey = value.toString()
+
         }
     }
 }

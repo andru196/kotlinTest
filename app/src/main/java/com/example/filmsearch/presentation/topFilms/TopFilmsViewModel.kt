@@ -10,10 +10,12 @@ import com.example.filmsearch.domain.entity.Film
 import com.example.filmsearch.domain.entity.TopType
 import com.example.filmsearch.presentation.common.SingleLiveEvent
 import com.example.filmsearch.presentation.common.launchWithErrorHandler
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class TopFilmsViewModel @Inject constructor(
     private val filmRepository: FilmRepository
 ): ViewModel() {

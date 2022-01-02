@@ -1,12 +1,16 @@
 package com.example.filmsearch.data.network
 
+import android.content.SharedPreferences
 import com.example.filmsearch.domain.FilmRepository
 import com.example.filmsearch.domain.entity.Film
 import com.example.filmsearch.domain.entity.TopType
+import javax.inject.Inject
+import javax.inject.Named
 
-class FilmRepositoryImpl(
+class FilmRepositoryImpl @Inject constructor(
     private val filmApi: FilmApi,
-    private val apiKey: String
+    private val sharedPreferences: SharedPreferences,
+    @Named("apiKey") private val apiKey: String
 ) : FilmRepository {
     override suspend fun getTopFilms(topType: TopType, page: Int): List<Film> {
         return filmApi.getTopFilms(topType.serverType, page, apiKey).films?.mapNotNull { filmNw ->
