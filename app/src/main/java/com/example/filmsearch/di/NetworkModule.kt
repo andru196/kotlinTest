@@ -4,7 +4,10 @@ import android.content.Context
 import android.content.pm.PackageManager
 import com.example.filmsearch.data.network.FilmApi
 import com.example.filmsearch.data.network.FilmRepositoryImpl
+import com.example.filmsearch.data.network.GeoApi
+import com.example.filmsearch.data.network.GeoRepositoryImpl
 import com.example.filmsearch.domain.FilmRepository
+import com.example.filmsearch.domain.GeoRepository
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Binds
 import dagger.Module
@@ -28,6 +31,7 @@ import javax.inject.Singleton
 abstract class NetworkModule {
     companion object {
         @Provides
+        @Singleton
         fun provideFilmApi(): FilmApi = Retrofit.Builder()
             .baseUrl("https://kinopoiskapiunofficial.tech")
             .client(
@@ -54,10 +58,31 @@ abstract class NetworkModule {
             )
             .build()
             .create()
+
+        @Provides
+        @Singleton
+        fun provideGeoApi(): GeoApi = Retrofit.Builder()
+            .baseUrl("https://nominatim.openstreetmap.org")
+            .client(
+                OkHttpClient.Builder()
+                    .addInterceptor(HttpLoggingInterceptor()
+                        .setLevel(HttpLoggingInterceptor.Level.BODY))
+                    .build()
+            )
+            .addConverterFactory(
+                Json(builderAction = {
+                    isLenient = true //не оч требовательно,
+                    ignoreUnknownKeys = true
+                }).asConverterFactory("application/json".toMediaType())
+            )
+            .build()
+            .create()
+
         var apiKey: String = ""
         @Provides
         @Singleton
         @Named("apiKey")
+
         fun provideApiKeyString(@ApplicationContext context: Context): String {
             val ai = context.packageManager
                 .getApplicationInfo(context.packageName, PackageManager.GET_META_DATA)
@@ -68,7 +93,13 @@ abstract class NetworkModule {
     }
 
     @Binds
+    @Singleton
     abstract fun getRepository(filmRepository: FilmRepositoryImpl
     ): FilmRepository
+
+    @Binds
+    @Singleton
+    abstract fun getGeoRepository(geoRepositoryImpl: GeoRepositoryImpl
+    ): GeoRepository
 
 }
