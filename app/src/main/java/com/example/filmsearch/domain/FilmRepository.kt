@@ -8,4 +8,5 @@ interface FilmRepository {
     * Запрашивает список топ фильмов по типу [topType]
     * */
     suspend fun getTopFilms(topType: TopType, page:Int): List<Film>
+    suspend fun search(yearFrom:Int?, yearTo:Int?): List<Film>
 }

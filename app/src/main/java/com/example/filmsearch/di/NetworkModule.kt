@@ -1,7 +1,6 @@
 package com.example.filmsearch.di
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import com.example.filmsearch.data.network.FilmApi
 import com.example.filmsearch.data.network.FilmRepositoryImpl
@@ -13,12 +12,14 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import dagger.hilt.migration.DisableInstallInCheck
 import retrofit2.Retrofit
 import kotlinx.serialization.json.Json
+import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.create
-import retrofit2.http.Field
+import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -29,6 +30,22 @@ abstract class NetworkModule {
         @Provides
         fun provideFilmApi(): FilmApi = Retrofit.Builder()
             .baseUrl("https://kinopoiskapiunofficial.tech")
+            .client(
+                OkHttpClient.Builder()
+                    .addInterceptor { chain: Interceptor.Chain ->
+                        val req = chain.request()
+                            .newBuilder()
+                            .addHeader("X-API-KEY", apiKey)
+                            .build()
+                        chain.proceed(req)
+                    }
+                    .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+//                    .connectTimeout(10, TimeUnit.SECONDS)
+//                    .callTimeout(10, TimeUnit.SECONDS)
+//                    .readTimeout(10, TimeUnit.SECONDS)
+//                    .writeTimeout(10, TimeUnit.SECONDS)
+                    .build()
+            )
             .addConverterFactory(
                 Json(builderAction = {
                 isLenient = true //не оч требовательно,
@@ -37,7 +54,7 @@ abstract class NetworkModule {
             )
             .build()
             .create()
-
+        var apiKey: String = ""
         @Provides
         @Singleton
         @Named("apiKey")
@@ -45,7 +62,8 @@ abstract class NetworkModule {
             val ai = context.packageManager
                 .getApplicationInfo(context.packageName, PackageManager.GET_META_DATA)
             val value = ai.metaData["keyValue"]
-            return value.toString()
+            apiKey = value.toString()
+            return apiKey
         }
     }
 

@@ -1,25 +1,21 @@
 package com.example.filmsearch.presentation.topFilms
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
+import androidx.core.view.isVisible
+import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.example.filmsearch.App
 import com.example.filmsearch.R
 import com.example.filmsearch.databinding.TopFilmsScreenBinding
-import com.example.filmsearch.di.NetworkModule
 import com.example.filmsearch.domain.entity.Film
+import com.example.filmsearch.presentation.city.CityFragment
 import com.example.filmsearch.presentation.common.BaseFragment
+import com.example.filmsearch.presentation.common.navigate
 import com.example.filmsearch.presentation.filmDetail.FilmDetailFragment
+import com.example.filmsearch.presentation.search.SearchFragment
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
-import javax.inject.Provider
 
 @AndroidEntryPoint
 class TopFilmsFragment : BaseFragment(R.layout.top_films_screen) {
@@ -35,21 +31,50 @@ class TopFilmsFragment : BaseFragment(R.layout.top_films_screen) {
             layoutManager = LinearLayoutManager(context)
         }
 
-        viewModel.filmState.observe(viewLifecycleOwner) {
-            topFilmsAdapter.submitList(it)
+        viewModel.screenState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is TopFilmsState.Error -> {
+                    viewBinding.topFilmError.isVisible = true
+                    viewBinding.topFilmProgress.isVisible = false
+                    viewBinding.topFilmList.isVisible = false
+                }
+                is TopFilmsState.Loading -> {
+                    viewBinding.topFilmError.isVisible = false
+                    viewBinding.topFilmProgress.isVisible = true
+                    viewBinding.topFilmList.isVisible = false
+                }
+                is TopFilmsState.Success -> {
+                    topFilmsAdapter.submitList(state.films)
+                    viewBinding.topFilmError.isVisible = false
+                    viewBinding.topFilmProgress.isVisible = false
+                    viewBinding.topFilmList.isVisible = true
+
+                }
+            }
         }
 
         viewModel.openDetailAction.observe(viewLifecycleOwner) {
             openDetail(it)
         }
 
+        viewBinding.topViewSearch.setOnClickListener {
+            openSearch()
+        }
 
+        viewBinding.topFilmCity.setOnClickListener {
+            openCity()
+        }
     }
 
     private fun openDetail(film: Film) {
-        val transaction = parentFragmentManager.beginTransaction()
-        transaction.replace(R.id.main_activity_container, FilmDetailFragment.newInstance(film))
-        transaction.addToBackStack(null)
-        transaction.commitAllowingStateLoss()
+        parentFragmentManager.navigate(FilmDetailFragment.newInstance(film))
+    }
+
+    private fun openSearch() {
+        parentFragmentManager.navigate(SearchFragment())
+    }
+    private fun openCity() {
+        parentFragmentManager.navigate(CityFragment())
+
     }
 }
