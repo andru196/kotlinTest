@@ -2,9 +2,10 @@ package com.example.filmsearch.domain.entity
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Parcelize
+@Serializable
 data class Film (
     val name: String,
     val year: Int,

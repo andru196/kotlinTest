@@ -13,5 +13,7 @@
     <string name="search_year_to_text">Год до</string>
     <string name="search_submit">Поиск</string>
     <string name="city_request_text">Запросить местоположение</string>
+    <string name="menu_bottom_fav">Любимки</string>
+    <string name="menu_bottom_tops">Список товов</string>
 
 </resources>
